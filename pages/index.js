@@ -50,11 +50,13 @@ export default function Home() {
         if (!input.trim() || isGenerating) return;
 
         const userMessage = { sender: 'user', text: input };
-        setMessages((prev) => [...prev, userMessage]);
+        // Add user message to messages first
+        const newMessages = [...messages, userMessage];
+        setMessages(newMessages);
         setInput('');
 
-        // Pass all previous messages as context
-        await generateResponse(input, messages);
+        // Pass all messages INCLUDING the new user message
+        await generateResponse(input, newMessages);
     };
 
     return (

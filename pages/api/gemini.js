@@ -21,16 +21,24 @@ export default async function handler(req, res) {
     }
 
     try {
-        const { prompt } = req.body;
+        const { prompt, messages = [] } = req.body;
 
         // Initialize the model
         const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
-        // Combine system prompt with user input
-        const fullPrompt = `${SYSTEM_PROMPT}\n\nUser: ${prompt}\n\nAssistant:`;
+        // Start a chat
+        const chat = model.startChat({
+            history: messages.map(msg => ({
+                role: msg.sender === 'user' ? 'user' : 'model',
+                parts: [{ text: msg.text }],
+            })),
+            generationConfig: {
+                maxOutputTokens: 1000,
+            },
+        });
 
-        // Generate content
-        const result = await model.generateContent(fullPrompt);
+        // Send the message and get the response
+        const result = await chat.sendMessage([{ text: prompt }]);
         const response = await result.response;
         const text = response.text();
 
