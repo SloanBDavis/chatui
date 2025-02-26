@@ -17,10 +17,13 @@ export default function Home() {
         setMessages(messages.slice(0, index + 1));
     };
 
-    const generateResponse = async (promptText) => {
+    const generateResponse = async (promptText, messageHistory = []) => {
         setIsGenerating(true);
         try {
-            const response = await axios.post(`/api/${provider}`, { prompt: promptText });
+            const response = await axios.post(`/api/${provider}`, {
+                prompt: promptText,
+                messages: messageHistory
+            });
             const botMessage = {
                 sender: 'bot',
                 text: response.data.choices[0].message.content
@@ -38,7 +41,8 @@ export default function Home() {
         const lastMessage = messages[messages.length - 1];
         if (lastMessage.sender !== 'user') return;
 
-        await generateResponse(lastMessage.text);
+        // Pass all messages up to this point as context
+        await generateResponse(lastMessage.text, messages.slice(0, -1));
     };
 
     const sendMessage = async (e) => {
@@ -49,7 +53,8 @@ export default function Home() {
         setMessages((prev) => [...prev, userMessage]);
         setInput('');
 
-        await generateResponse(input);
+        // Pass all previous messages as context
+        await generateResponse(input, messages);
     };
 
     return (

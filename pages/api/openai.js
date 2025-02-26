@@ -12,12 +12,19 @@ export default async function handler(req, res) {
     }
 
     try {
-        const { prompt } = req.body;
+        const { prompt, messages = [] } = req.body;
+
+        // Convert previous messages to OpenAI format
+        const messageHistory = messages.map(msg => ({
+            role: msg.sender === 'user' ? 'user' : 'assistant',
+            content: msg.text
+        }));
 
         const completion = await openai.createChatCompletion({
             model: "gpt-3.5-turbo",
             messages: [
                 { role: "system", content: "You are a helpful assistant." },
+                ...messageHistory,
                 { role: "user", content: prompt }
             ],
             temperature: 0.7,
