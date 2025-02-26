@@ -6,6 +6,7 @@ import ChatWindow from '../components/ChatWindow';
 export default function Home() {
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
+    const [provider, setProvider] = useState('openai');
 
     const sendMessage = async (e) => {
         e.preventDefault();
@@ -14,10 +15,12 @@ export default function Home() {
         const userMessage = { sender: 'user', text: input };
         setMessages((prev) => [...prev, userMessage]);
 
-        // Example: Call OpenAI API route
         try {
-            const response = await axios.post('/api/openai', { prompt: input });
-            const botMessage = { sender: 'bot', text: response.data.choices[0].text };
+            const response = await axios.post(`/api/${provider}`, { prompt: input });
+            const botMessage = {
+                sender: 'bot',
+                text: response.data.choices[0].message.content
+            };
             setMessages((prev) => [...prev, botMessage]);
         } catch (error) {
             console.error('Error sending message:', error);
@@ -28,6 +31,11 @@ export default function Home() {
     return (
         <div>
             <h1>LLM Chat UI</h1>
+            <select value={provider} onChange={(e) => setProvider(e.target.value)}>
+                <option value="openai">OpenAI</option>
+                <option value="gemini">Gemini</option>
+                <option value="claude">Claude</option>
+            </select>
             <ChatWindow messages={messages} />
             <form onSubmit={sendMessage}>
                 <input
