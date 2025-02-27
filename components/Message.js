@@ -9,18 +9,25 @@ const Message = ({ message, onRewind, canRegenerate, onRegenerate }) => {
     };
 
     return (
-        <div className={`message ${sender}`}>
-            <div className="message-content">
-                <div className="sender">{sender === 'user' ? 'You' : 'AI'}</div>
-                <div className="text">
+        <div className={`flex flex-col ${sender === 'user' ? 'items-end' : 'items-start'} mb-4 text-foreground`}>
+            <div className={`group max-w-[80%] rounded-lg p-4 ${sender === 'user'
+                ? 'bg-primary text-primary-foreground'
+                : 'bg-secondary text-secondary-foreground'
+                }`}>
+                <div className="font-semibold text-sm mb-1">
+                    {sender === 'user' ? 'You' : 'AI'}
+                </div>
+                <div className="prose prose-sm prose-invert">
                     <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
                         components={{
-                            // Style code blocks
                             code({ node, inline, className, children, ...props }) {
                                 return (
                                     <code
-                                        className={`${className} ${inline ? 'inline-code' : 'code-block'}`}
+                                        className={`${className} ${inline
+                                            ? 'bg-muted px-1.5 py-0.5 rounded text-sm'
+                                            : 'block bg-muted p-4 rounded-lg overflow-x-auto'
+                                            }`}
                                         {...props}
                                     >
                                         {children}
@@ -32,161 +39,35 @@ const Message = ({ message, onRewind, canRegenerate, onRegenerate }) => {
                         {text}
                     </ReactMarkdown>
                 </div>
-                <div className="actions">
-                    <button onClick={copyMessage} className="action-btn">
+                <div className="flex gap-2 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button
+                        onClick={copyMessage}
+                        className={`text-xs px-2 py-1 rounded ${sender === 'user'
+                            ? 'hover:bg-primary-foreground/10'
+                            : 'hover:bg-muted'
+                            } transition-colors`}
+                    >
                         Copy
                     </button>
-                    <button onClick={onRewind} className="action-btn">
+                    <button
+                        onClick={onRewind}
+                        className={`text-xs px-2 py-1 rounded ${sender === 'user'
+                            ? 'hover:bg-primary-foreground/10'
+                            : 'hover:bg-muted'
+                            } transition-colors`}
+                    >
                         Rewind here
                     </button>
                     {canRegenerate && (
-                        <button onClick={onRegenerate} className="action-btn regenerate">
-                            Regenerate response
+                        <button
+                            onClick={onRegenerate}
+                            className="text-xs px-2 py-1 rounded bg-primary/10 hover:bg-primary/20 transition-colors"
+                        >
+                            Regenerate
                         </button>
                     )}
                 </div>
             </div>
-            <style jsx>{`
-                .message {
-                    padding: 10px;
-                    margin: 10px 0;
-                    border-radius: 8px;
-                    max-width: 80%;
-                }
-                
-                .user {
-                    background-color: #e3f2fd;
-                    margin-left: auto;
-                }
-                
-                .bot {
-                    background-color: #f5f5f5;
-                    margin-right: auto;
-                }
-                
-                .message-content {
-                    display: flex;
-                    flex-direction: column;
-                }
-                
-                .sender {
-                    font-weight: bold;
-                    margin-bottom: 4px;
-                    font-size: 0.9em;
-                }
-            `}</style>
-            <style jsx global>{`
-                .text {
-                    white-space: pre-wrap;
-                    word-wrap: break-word;
-                    margin-bottom: 8px;
-                }
-
-                .text p {
-                    margin: 0.5em 0;
-                }
-
-                .text p:first-child {
-                    margin-top: 0;
-                }
-
-                .text p:last-child {
-                    margin-bottom: 0;
-                }
-
-                .text ul, .text ol {
-                    margin: 0.5em 0;
-                    padding-left: 1.5em;
-                }
-
-                .text li {
-                    margin: 0.2em 0;
-                }
-
-                .code-block {
-                    display: block;
-                    background-color: #f8f9fa;
-                    padding: 0.75em 1em;
-                    margin: 0.5em 0;
-                    border-radius: 4px;
-                    font-family: monospace;
-                    white-space: pre;
-                    overflow-x: auto;
-                }
-
-                .inline-code {
-                    background-color: #f8f9fa;
-                    padding: 0.2em 0.4em;
-                    border-radius: 3px;
-                    font-family: monospace;
-                }
-
-                .text a {
-                    color: #0070f3;
-                    text-decoration: none;
-                }
-
-                .text a:hover {
-                    text-decoration: underline;
-                }
-
-                .text blockquote {
-                    margin: 0.5em 0;
-                    padding-left: 1em;
-                    border-left: 3px solid #ccc;
-                    color: #666;
-                }
-
-                .text table {
-                    border-collapse: collapse;
-                    margin: 0.5em 0;
-                    width: 100%;
-                }
-
-                .text th, .text td {
-                    border: 1px solid #ddd;
-                    padding: 0.5em;
-                    text-align: left;
-                }
-
-                .text th {
-                    background-color: #f8f9fa;
-                }
-
-                .actions {
-                    display: flex;
-                    gap: 8px;
-                    opacity: 0;
-                    transition: opacity 0.2s;
-                }
-
-                .message:hover .actions {
-                    opacity: 1;
-                }
-
-                .action-btn {
-                    padding: 4px 8px;
-                    font-size: 0.8em;
-                    border: none;
-                    border-radius: 4px;
-                    background: #ffffff80;
-                    cursor: pointer;
-                    transition: background 0.2s;
-                }
-
-                .action-btn:hover {
-                    background: #ffffff;
-                }
-
-                .regenerate {
-                    background: #e3f2fd;
-                    color: #0070f3;
-                }
-
-                .regenerate:hover {
-                    background: #bbdefb;
-                }
-            `}</style>
         </div>
     );
 };

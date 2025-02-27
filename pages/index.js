@@ -60,13 +60,13 @@ export default function Home() {
     };
 
     return (
-        <div className="container">
-            <h1>LLM Chat UI</h1>
-            <div className="controls">
+        <div className="container mx-auto max-w-3xl px-4 py-8 min-h-screen bg-background text-foreground">
+            <h1 className="text-2xl font-bold mb-6">LLM Chat UI</h1>
+            <div className="flex gap-4 mb-6">
                 <select
                     value={provider}
                     onChange={(e) => setProvider(e.target.value)}
-                    className="provider-select"
+                    className="px-3 py-2 rounded-md border border-input bg-background"
                     disabled={isGenerating}
                 >
                     <option value="openai">OpenAI</option>
@@ -75,7 +75,7 @@ export default function Home() {
                 </select>
                 <button
                     onClick={clearChat}
-                    className="clear-btn"
+                    className="px-4 py-2 rounded-md bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-colors"
                     disabled={isGenerating}
                 >
                     Clear Chat
@@ -86,81 +86,23 @@ export default function Home() {
                 onRewind={handleRewind}
                 onRegenerate={handleRegenerate}
             />
-            <form onSubmit={sendMessage}>
+            <form onSubmit={sendMessage} className="flex gap-4">
                 <input
                     type="text"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     placeholder="Type your message..."
+                    className="flex-1 px-4 py-2 rounded-md border border-input bg-background"
                     disabled={isGenerating}
                 />
-                <button type="submit" disabled={isGenerating}>
+                <button
+                    type="submit"
+                    className="px-6 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50"
+                    disabled={isGenerating}
+                >
                     {isGenerating ? 'Generating...' : 'Send'}
                 </button>
             </form>
-            <style jsx>{`
-                .container {
-                    max-width: 800px;
-                    margin: 0 auto;
-                    padding: 20px;
-                }
-
-                .controls {
-                    display: flex;
-                    gap: 10px;
-                    margin-bottom: 20px;
-                }
-
-                .provider-select {
-                    padding: 8px;
-                    border-radius: 4px;
-                }
-
-                .clear-btn {
-                    padding: 8px 16px;
-                    background-color: #ff4444;
-                    color: white;
-                    border: none;
-                    border-radius: 4px;
-                    cursor: pointer;
-                }
-
-                .clear-btn:hover {
-                    background-color: #cc0000;
-                }
-
-                form {
-                    display: flex;
-                    gap: 10px;
-                }
-
-                input {
-                    flex: 1;
-                    padding: 10px;
-                    border: 1px solid #ccc;
-                    border-radius: 4px;
-                }
-
-                button {
-                    padding: 10px 20px;
-                    background-color: #0070f3;
-                    color: white;
-                    border: none;
-                    border-radius: 4px;
-                    cursor: pointer;
-                }
-
-                button:hover {
-                    background-color: #0051a2;
-                }
-
-                button:disabled,
-                input:disabled,
-                select:disabled {
-                    opacity: 0.7;
-                    cursor: not-allowed;
-                }
-            `}</style>
         </div>
     );
 }

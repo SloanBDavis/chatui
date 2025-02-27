@@ -3,7 +3,7 @@ import Message from './Message';
 
 const ChatWindow = ({ messages, onRewind, onRegenerate }) => {
     return (
-        <div className="chat-window">
+        <div className="h-[400px] overflow-y-auto p-4 mb-6 border border-border rounded-lg">
             {messages.map((message, index) => {
                 // Show regenerate option if it's a user message at the end
                 const isLastMessage = index === messages.length - 1;
@@ -19,16 +19,6 @@ const ChatWindow = ({ messages, onRewind, onRegenerate }) => {
                     />
                 );
             })}
-            <style jsx>{`
-                .chat-window {
-                    height: 400px;
-                    overflow-y: auto;
-                    padding: 20px;
-                    border: 1px solid #ccc;
-                    border-radius: 8px;
-                    margin: 20px 0;
-                }
-            `}</style>
         </div>
     );
 };
