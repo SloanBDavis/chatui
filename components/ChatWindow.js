@@ -3,7 +3,7 @@ import Message from './Message';
 
 const ChatWindow = ({ messages, onRewind, onRegenerate }) => {
     return (
-        <div className="h-[400px] overflow-y-auto p-4 mb-6 border border-border rounded-lg">
+        <div className="h-[60vh] overflow-y-auto p-4 mb-6 border border-border rounded-lg">
             {messages.map((message, index) => {
                 // Show regenerate option if it's a user message at the end
                 const isLastMessage = index === messages.length - 1;
